@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Справочник КТРУ</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Код</th>
+                <th>Название</th>
+                <th>Описание</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        async function getKTRU() {
+            const token = getURLVar("token");
+
+            const response = await fetch(`/api/ktru?token=${token}`, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+
+            if (response.ok === true)
+            {
+                const ktru = await response.json();
+                const rows = document.querySelector("tbody");
+
+                ktru.forEach(item => rows.append(row(item)));
+            }            
+        }
+
+        function getURLVar(key) {
+            var query = String(document.location.href).split('?');
+            if (query[1]) {
+                var part = query[1].split('&');
+                for (i = 0; i < part.length; i++) {
+                    var data = part[i].split('=');
+                    if (data[0] == key && data[1]) return data[1];
+                }
+            }
+            return '';
+        }
+
+        function row(item) {
+
+            const tr = document.createElement("tr");
+
+            const idTd = document.createElement("td");
+            idTd.append(item.id);
+            tr.append(idTd);
+
+            const nameTd = document.createElement("td");
+            nameTd.append(item.name);
+            tr.append(nameTd);
+
+            const descTd = document.createElement("td");
+            descTd.append(item.description);
+            tr.append(descTd);
+            
+            return tr;
+        };
+
+        getKTRU();
+    </script>
+</body>
+</html>
